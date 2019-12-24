@@ -7,7 +7,6 @@
 
   <modules>
     <module>timewindow</module>
-    <module>conf</module>
   </modules>
 
   <properties>
