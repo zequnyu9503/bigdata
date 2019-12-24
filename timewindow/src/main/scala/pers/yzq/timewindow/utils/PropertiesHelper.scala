@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package pers.yzq.bigdata
+package pers.yzq.timewindow.utils
 
 import java.io.{File, FileInputStream}
 import java.util.Properties
@@ -31,9 +31,9 @@ object PropertiesHelper extends Serializable {
       property = new Properties()
       property.load(stream)
     } else {
-      //scalastyle:off println
+      // scalastyle:off println
       System.err.println("No sys.properties exists below the path of user.dir")
-      //scalastyle:on println
+      // scalastyle:on println
       System.exit(-1)
     }
   }
