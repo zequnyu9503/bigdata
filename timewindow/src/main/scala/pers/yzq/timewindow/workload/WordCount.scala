@@ -17,12 +17,12 @@
 package pers.yzq.timewindow.workload
 
 import org.apache.spark.{SparkConf, SparkContext}
-import pers.yzq.timewindow.PropertiesHelper
+import pers.yzq.timewindow.PropertyProvider
 
 object WordCount {
 
-  val input = PropertiesHelper.getProperty("workload.wordcount.input")
-  val output = PropertiesHelper.getProperty("workload.wordcount.output")
+  val input = PropertyProvider.getProperty("workload.wordcount.input")
+  val output = PropertyProvider.getProperty("workload.wordcount.output")
 
   def main(args: Array[String]): Unit = {
     val conf = new SparkConf().setAppName("WordCount-" + System.currentTimeMillis())
@@ -33,5 +33,4 @@ object WordCount {
 
     sc.stop()
   }
-
 }
