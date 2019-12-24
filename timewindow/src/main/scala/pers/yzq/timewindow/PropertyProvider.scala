@@ -16,25 +16,18 @@
  */
 package pers.yzq.timewindow
 
-import java.io.{File, FileInputStream}
 import java.util.Properties
 
 object PropertyProvider extends Serializable {
   private var property : Properties = null
 
   {
-    val twa_file = new File("sys.properties")
-    if(twa_file.exists()) {
-      val stream = new FileInputStream(twa_file)
-      property = new Properties()
-      property.load(stream)
-    } else {
-      // scalastyle:off println
-      System.err.println("No sys.properties exists below the path of user.dir")
-      // scalastyle:on println
-      System.exit(-1)
-    }
+    val sys = "pers/yzq/timewindow/sys.properties"
+    property = new Properties()
+    property.load(getClass.getClassLoader.getResourceAsStream(sys))
   }
 
-  def getProperty(key: String) : String = property.getProperty(key)
+  def getString(key: String) : String = property.getProperty(key)
+
+  def getLong(key: String): Long = getString(key).toLong
 }

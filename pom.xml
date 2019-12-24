@@ -13,9 +13,15 @@
     <spark.version>2.4.4</spark.version>
     <scala.version>2.11.12</scala.version>
     <scalatest.version>3.0.3</scalatest.version>
+    <guava.version>27.1-jre</guava.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_2.11</artifactId>
