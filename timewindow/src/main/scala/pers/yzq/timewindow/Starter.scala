@@ -14,23 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pers.yzq.timewindow.workload
+package pers.yzq.timewindow
 
-import org.apache.spark.{SparkConf, SparkContext}
-import pers.yzq.timewindow.PropertiesHelper
-
-object WordCount {
-
-  val input = PropertiesHelper.getProperty("workload.wordcount.input")
-  val output = PropertiesHelper.getProperty("workload.wordcount.output")
+object Starter {
 
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf().setAppName("WordCount-" + System.currentTimeMillis())
-    val sc = new SparkContext(conf)
-
-    sc.textFile(input).flatMap(e => e.split(" ")).map(e => (e, 1)).reduceByKey(_ + _)
-      .saveAsObjectFile(output)
-
-    sc.stop()
+    // scalastyle:off println
+    println("YUQ")
   }
 }

@@ -14,23 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pers.yzq.timewindow.workload
+package pers.yzq.timewindow
 
-import org.apache.spark.{SparkConf, SparkContext}
-import pers.yzq.timewindow.PropertiesHelper
+import java.io.{File, FileInputStream}
+import java.util.Properties
 
-object WordCount {
+object PropertiesHelper extends Serializable {
+  private var property : Properties = null
 
-  val input = PropertiesHelper.getProperty("workload.wordcount.input")
-  val output = PropertiesHelper.getProperty("workload.wordcount.output")
-
-  def main(args: Array[String]): Unit = {
-    val conf = new SparkConf().setAppName("WordCount-" + System.currentTimeMillis())
-    val sc = new SparkContext(conf)
-
-    sc.textFile(input).flatMap(e => e.split(" ")).map(e => (e, 1)).reduceByKey(_ + _)
-      .saveAsObjectFile(output)
-
-    sc.stop()
+  {
+    val twa_path = System.getProperty("user.dir") + File.separator + "timewindow.properties"
+    val twa_file = new File(twa_path)
+    if(twa_file.exists()) {
+      val stream = new FileInputStream(twa_file)
+      property = new Properties()
+      property.load(stream)
+    } else {
+      // scalastyle:off println
+      System.err.println("No sys.properties exists below the path of user.dir")
+      // scalastyle:on println
+      System.exit(-1)
+    }
   }
+
+  def getProperty(key: String) : String = property.getProperty(key)
 }

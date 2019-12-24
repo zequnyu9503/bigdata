@@ -12,5 +12,11 @@
 
     <artifactId>timewindow</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>pers.yzq.bigdata</groupId>
+            <artifactId>bigdata</artifactId>
+            <version>init</version>
+        </dependency>
+    </dependencies>
 </project>
