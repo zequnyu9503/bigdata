@@ -23,7 +23,7 @@ object PropertiesHelper extends Serializable {
   private var property : Properties = null
 
   {
-    val twa_path = System.getProperty("user.dir") + File.separator + "timewindow.properties"
+    val twa_path = System.getProperty("user.dir") + File.separator + "sys.properties"
     val twa_file = new File(twa_path)
     if(twa_file.exists()) {
       val stream = new FileInputStream(twa_file)
