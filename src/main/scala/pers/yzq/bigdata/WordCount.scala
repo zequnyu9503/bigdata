@@ -20,18 +20,16 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 object WordCount {
 
+  val input = PropertiesHelper.getProperty("workload.wordcount.input")
+  val output = PropertiesHelper.getProperty("workload.wordcount.output")
+
   def main(args: Array[String]): Unit = {
-    val input = PropertiesHelper.getProperty("workload.wordcount.input")
-    val output = PropertiesHelper.getProperty("workload.wordcount.output")
+    val conf = new SparkConf().setAppName("WordCount-" + System.currentTimeMillis())
+    val sc = new SparkContext(conf)
 
-    def main(args: Array[String]): Unit = {
-      val conf = new SparkConf().setAppName("WordCount-" + System.currentTimeMillis())
-      val sc = new SparkContext(conf)
+    val data = sc.textFile(input)
+    data.flatMap(e => e.split(" ")).map(e => (e, 1)).reduceByKey(_ + _).saveAsObjectFile(output)
 
-      val data = sc.textFile(input)
-      data.flatMap(e => e.split(" ")).map(e => (e, 1)).reduceByKey(_ + _).saveAsObjectFile(output)
-
-      sc.stop()
-    }
+    sc.stop()
   }
 }
