@@ -22,7 +22,7 @@ import pers.yzq.timewindow.PropertyProvider
 object WordCount {
 
   val input = PropertyProvider.getString("workload.wordcount.input")
-  val output = PropertyProvider.getString("workload.wordcount.output")
+  val output = PropertyProvider.getString("workload.wordcount.output") + System.currentTimeMillis()
 
   def main(args: Array[String]): Unit = {
     val conf = new SparkConf().setAppName("WordCount-" + System.currentTimeMillis())
