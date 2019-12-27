@@ -20,6 +20,6 @@ object Starter {
 
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
-    println("sa")
+    println(PropertyProvider.getString("prefetcher.loader.input"))
   }
 }

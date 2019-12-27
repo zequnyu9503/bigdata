@@ -35,14 +35,15 @@ object UsingIterator {
   val input: String = PropertyProvider.getString("prefetcher.loader.input")
 
   def main(args: Array[String]): Unit = {
+    // scalastyle:off println
+
     val iterator = getIterator
     var count: Long = 0L
     while (iterator.hasNext) {
       iterator.next()
       count += 1
+      println(s"Total $count elements")
     }
-    // scalastyle:off println
-    println(s"Total $count elements")
   }
 
   def getIterator: Iterator[String] = {

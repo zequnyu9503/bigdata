@@ -19,10 +19,10 @@ package pers.yzq.timewindow
 import java.util.Properties
 
 object PropertyProvider extends Serializable {
-  private var property : Properties = null
+  private var property : Properties = _
 
   {
-    val sys = "pers/yzq/timewindow/sys.properties"
+    val sys = "sys.properties"
     property = new Properties()
     property.load(getClass.getClassLoader.getResourceAsStream(sys))
   }
