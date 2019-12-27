@@ -20,6 +20,6 @@ object Starter {
 
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
-    println(PropertyProvider.getString("workload.wordcount.input"))
+    println("sa")
   }
 }
