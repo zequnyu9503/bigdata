@@ -19,7 +19,7 @@ package pers.yzq.timewindow.prefetcher.loader
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.{LongWritable}
+import org.apache.hadoop.io.{LongWritable, Text}
 import org.apache.hadoop.mapred.{FileInputFormat, InputFormat, InputSplit, JobConf, RecordReader, Reporter, TextInputFormat}
 import org.apache.hadoop.util.ReflectionUtils
 import pers.yzq.timewindow.PropertyProvider
@@ -40,21 +40,21 @@ object UsingIterator {
     }
   }
 
-  def getIterator: Iterator[String] = {
-    new Iterator[String] {
+  def getIterator: Iterator[Text] = {
+    new Iterator[Text] {
 
       var finished = false
       var gotNext = false
-      var nextValue: String = _
+      var nextValue: Text = _
 
       var key: LongWritable = _
-      var value: String = _
+      var value: Text = _
 
       val jobConf: JobConf = getJobConf
-      val inputFormat: InputFormat[LongWritable, String] = getInputFormat(jobConf)
+      val inputFormat: InputFormat[LongWritable, Text] = getInputFormat(jobConf)
       val inputSplit: InputSplit = getPartitions(0)
 
-      val recordReader: RecordReader[LongWritable, String] =
+      val recordReader: RecordReader[LongWritable, Text] =
         inputFormat.getRecordReader(inputSplit, jobConf, Reporter.NULL)
 
       key = recordReader.createKey()
@@ -74,7 +74,7 @@ object UsingIterator {
         !finished
       }
 
-      override def next(): String = {
+      override def next(): Text = {
         if (!hasNext) {
           throw new NoSuchElementException("End of stream")
         }
@@ -84,7 +84,7 @@ object UsingIterator {
     }
   }
 
-  def getReader: RecordReader[LongWritable, String] = {
+  def getReader: RecordReader[LongWritable, Text] = {
     val jobConf = getJobConf
     val inputFormat = getInputFormat(jobConf)
     val inputSplit = getPartitions(0)
@@ -101,11 +101,11 @@ object UsingIterator {
     newJobConf
   }
 
-  def getInputFormat(jobConf: JobConf): InputFormat[LongWritable, String] = {
+  def getInputFormat(jobConf: JobConf): InputFormat[LongWritable, Text] = {
     val inputFormatClass = classOf[TextInputFormat].asInstanceOf[Class[_]]
     ReflectionUtils
       .newInstance(inputFormatClass, jobConf)
-      .asInstanceOf[InputFormat[LongWritable, String]]
+      .asInstanceOf[InputFormat[LongWritable, Text]]
   }
 
   def getPartitions: Array[InputSplit] = {
