@@ -8,6 +8,7 @@
   <modules>
     <module>timewindow</module>
     <module>libs</module>
+    <module>libs</module>
   </modules>
 
   <properties>
