@@ -13,8 +13,4 @@
 
     <artifactId>timewindow</artifactId>
     <packaging>jar</packaging>
-
-    <dependencies>
-
-    </dependencies>
 </project>

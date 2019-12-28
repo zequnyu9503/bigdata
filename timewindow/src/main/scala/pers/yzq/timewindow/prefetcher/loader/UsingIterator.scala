@@ -16,17 +16,10 @@
  */
 package pers.yzq.timewindow.prefetcher.loader
 
+
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.Text
-import org.apache.hadoop.mapred.{
-  FileInputFormat,
-  InputFormat,
-  InputSplit,
-  JobConf,
-  RecordReader,
-  Reporter,
-  TextInputFormat
-}
+import org.apache.hadoop.mapred.{FileInputFormat, InputFormat, InputSplit, JobConf, RecordReader, Reporter, TextInputFormat}
 import org.apache.hadoop.util.ReflectionUtils
 import pers.yzq.timewindow.PropertyProvider
 
