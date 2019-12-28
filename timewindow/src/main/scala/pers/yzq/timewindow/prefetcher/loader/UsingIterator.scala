@@ -19,7 +19,7 @@ package pers.yzq.timewindow.prefetcher.loader
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.Text
+import org.apache.hadoop.io.{LongWritable}
 import org.apache.hadoop.mapred.{FileInputFormat, InputFormat, InputSplit, JobConf, RecordReader, Reporter, TextInputFormat}
 import org.apache.hadoop.util.ReflectionUtils
 import pers.yzq.timewindow.PropertyProvider
@@ -47,14 +47,14 @@ object UsingIterator {
       var gotNext = false
       var nextValue: String = _
 
-      var key: Text = _
+      var key: LongWritable = _
       var value: String = _
 
       val jobConf: JobConf = getJobConf
-      val inputFormat: InputFormat[Text, String] = getInputFormat(jobConf)
+      val inputFormat: InputFormat[LongWritable, String] = getInputFormat(jobConf)
       val inputSplit: InputSplit = getPartitions(0)
 
-      val recordReader: RecordReader[Text, String] =
+      val recordReader: RecordReader[LongWritable, String] =
         inputFormat.getRecordReader(inputSplit, jobConf, Reporter.NULL)
 
       key = recordReader.createKey()
@@ -84,7 +84,7 @@ object UsingIterator {
     }
   }
 
-  def getReader: RecordReader[Text, String] = {
+  def getReader: RecordReader[LongWritable, String] = {
     val jobConf = getJobConf
     val inputFormat = getInputFormat(jobConf)
     val inputSplit = getPartitions(0)
@@ -101,11 +101,11 @@ object UsingIterator {
     newJobConf
   }
 
-  def getInputFormat(jobConf: JobConf): InputFormat[Text, String] = {
+  def getInputFormat(jobConf: JobConf): InputFormat[LongWritable, String] = {
     val inputFormatClass = classOf[TextInputFormat].asInstanceOf[Class[_]]
     ReflectionUtils
       .newInstance(inputFormatClass, jobConf)
-      .asInstanceOf[InputFormat[Text, String]]
+      .asInstanceOf[InputFormat[LongWritable, String]]
   }
 
   def getPartitions: Array[InputSplit] = {
