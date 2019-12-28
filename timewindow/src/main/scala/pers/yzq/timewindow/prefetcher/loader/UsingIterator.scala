@@ -30,17 +30,17 @@ object UsingIterator {
 
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
-
-    val iterator = getIterator
+    val partitionIndex = args(0).toInt
+    val iterator = getIterator(partitionIndex)
     var count: Long = 0L
     while (iterator.hasNext) {
       iterator.next()
       count += 1
-      println(s"Total $count elements")
     }
+    println(s"Total $count elements from partition ${partitionIndex}")
   }
 
-  def getIterator: Iterator[Text] = {
+  def getIterator(partitionIndex: Int): Iterator[Text] = {
     new Iterator[Text] {
 
       var finished = false
@@ -52,7 +52,7 @@ object UsingIterator {
 
       val jobConf: JobConf = getJobConf
       val inputFormat: InputFormat[LongWritable, Text] = getInputFormat(jobConf)
-      val inputSplit: InputSplit = getPartitions(0)
+      val inputSplit: InputSplit = getPartitions(partitionIndex)
 
       val recordReader: RecordReader[LongWritable, Text] =
         inputFormat.getRecordReader(inputSplit, jobConf, Reporter.NULL)
