@@ -95,6 +95,7 @@ object UsingIterator {
     val conf = new Configuration()
     conf.addResource("pers/yzq/timewindow/core-site.xml")
     conf.addResource("pers/yzq/timewindow/hdfs-site.xml")
+    conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem")
     val newJobConf = new JobConf(conf)
     FileInputFormat.setInputPaths(newJobConf, new Path(input))
     newJobConf
