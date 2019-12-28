@@ -18,6 +18,7 @@ package pers.yzq.timewindow.prefetcher.loader
 
 
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.mapred.{FileInputFormat, InputFormat, InputSplit, JobConf, RecordReader, Reporter, TextInputFormat}
 import org.apache.hadoop.util.ReflectionUtils
@@ -93,7 +94,7 @@ object UsingIterator {
   def getJobConf: JobConf = {
     val conf = new Configuration()
     val newJobConf = new JobConf(conf)
-    FileInputFormat.setInputPaths(newJobConf, input)
+    FileInputFormat.setInputPaths(newJobConf, new Path(input))
     newJobConf
   }
 
