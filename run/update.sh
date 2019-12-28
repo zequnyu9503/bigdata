@@ -1,2 +1,2 @@
 #!/bin/bash
-mvn -f ../pom.xml dependency:copy-dependencies
+mvn -pl bigdata -f ../pom.xml dependency:copy-dependencies
