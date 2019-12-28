@@ -125,6 +125,25 @@
           </execution>
         </executions>
       </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-dependency-plugin</artifactId>-->
+<!--          <executions>-->
+<!--              <execution>-->
+<!--                <id>copy-dependencies</id>-->
+<!--                <phase>package</phase>-->
+<!--                <goals>-->
+<!--                  <goal>copy-dependencies</goal>-->
+<!--                </goals>-->
+<!--                <configuration>-->
+<!--                  <outputDirectory>${basedir}/run</outputDirectory>-->
+<!--                  <excludeTransitive>false</excludeTransitive>-->
+<!--                  <stripVersion>false</stripVersion>-->
+<!--                  <includeScope>runtime</includeScope>-->
+<!--                </configuration>-->
+<!--              </execution>-->
+<!--          </executions>-->
+<!--      </plugin>-->
       <!-- scala style -->
       <plugin>
         <groupId>org.scalastyle</groupId>
