@@ -1,2 +1,2 @@
 #!/bin/bash
-mvn -f ../ clean compile package
+mvn -f ../ clean compile package install -DskipTests
