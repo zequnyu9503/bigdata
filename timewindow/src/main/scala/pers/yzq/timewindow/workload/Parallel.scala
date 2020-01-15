@@ -27,7 +27,7 @@ object Parallel {
     val conf = new SparkConf().setAppName("Parallel")
     val sc = new SparkContext(conf)
 
-    val rdd = sc.parallelize(Seq(1, 1, 1))
+    val rdd = sc.textFile("hdfs://centos3:9000/data/1G")
 
     val job1 = new Runnable {
       override def run(): Unit = {
