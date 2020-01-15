@@ -24,7 +24,7 @@ object Parallel {
 
   def main(args: Array[String]): Unit = {
     val threadpoolexecutor = Executors.newFixedThreadPool(2)
-    val conf = new SparkConf().setAppName("Parallel").setMaster("local")
+    val conf = new SparkConf().setAppName("Parallel")
     val sc = new SparkContext(conf)
 
     val rdd = sc.parallelize(Seq(1, 1, 1))

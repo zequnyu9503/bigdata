@@ -5,5 +5,5 @@ spark-submit \
 --executor-cores 4 \
 --driver-memory 12G \
 --driver-cores 4 \
---class pers.yzq.timewindow.workload.WordCount \
+--class pers.yzq.timewindow.workload.Parallel \
 ../timewindow/target/timewindow-init.jar
