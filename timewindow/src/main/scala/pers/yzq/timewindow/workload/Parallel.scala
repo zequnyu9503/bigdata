@@ -14,27 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pers.yzq.timewindow
+package pers.yzq.timewindow.workload
 
 import java.util.concurrent.Executors
 
 import org.apache.spark.{SparkConf, SparkContext}
-import org.scalatest.FunSuite
 
-class Simple extends FunSuite{
+object Parallel {
 
-  var s: String = _
-
-  private val threadpoolexecutor = Executors.newFixedThreadPool(2)
-
-  test("_ null") {
-    if (s.eq(null)) {
-      // scalastyle:off println
-      System.err.println("null")
-    }
-  }
-
-  test("Parallel") {
+  def main(args: Array[String]): Unit = {
+    val threadpoolexecutor = Executors.newFixedThreadPool(2)
     val conf = new SparkConf().setAppName("Parallel").setMaster("local")
     val sc = new SparkContext(conf)
 

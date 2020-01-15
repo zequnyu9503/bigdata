@@ -40,7 +40,6 @@ trait BulkLoad {
       assert(HBaseCommon.createTable(tableName, Array(columnFamily), split()).equals(true))
     }
   }
-
   def bulkLoad(): Unit = {
     prepare(false)
     val hc = HBaseConfiguration.create
