@@ -16,18 +16,10 @@
  */
 package pers.yzq.hbase
 
-import java.util.Properties
+object Twitter {
 
-object PropertyProvider extends Serializable {
-  private var property : Properties = _
+  def main(args: Array[String]): Unit = {
 
-  {
-    val sys = "pers/yzq/hbase/hbase.properties"
-    property = new Properties()
-    property.load(getClass.getClassLoader.getResourceAsStream(sys))
   }
 
-  def getString(key: String) : String = property.getProperty(key)
-
-  def getLong(key: String): Long = getString(key).toLong
 }

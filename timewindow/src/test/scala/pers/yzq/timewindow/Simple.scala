@@ -17,6 +17,7 @@
 package pers.yzq.timewindow
 
 import java.util.concurrent.Executors
+import java.util.regex.Pattern
 
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.FunSuite
@@ -54,5 +55,12 @@ class Simple extends FunSuite{
 
     threadpoolexecutor.submit(job2)
     threadpoolexecutor.submit(job1)
+  }
+
+  test("match") {
+    var str = "a     b"
+    val pattern = "[ ]*".r
+    str = pattern.replaceAllIn(str, "")
+    println(str)
   }
 }

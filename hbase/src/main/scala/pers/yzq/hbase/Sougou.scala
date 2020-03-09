@@ -15,19 +15,22 @@
  * limitations under the License.
  */
 package pers.yzq.hbase
+import org.apache.hadoop.hbase.KeyValue
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable
+import org.apache.spark.rdd.RDD
 
-import java.util.Properties
+object Sougou extends BulkLoad {
 
-object PropertyProvider extends Serializable {
-  private var property : Properties = _
 
-  {
-    val sys = "pers/yzq/hbase/hbase.properties"
-    property = new Properties()
-    property.load(getClass.getClassLoader.getResourceAsStream(sys))
+  def main(args: Array[String]): Unit = {
+
   }
 
-  def getString(key: String) : String = property.getProperty(key)
+  override def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
 
-  def getLong(key: String): Long = getString(key).toLong
+  }
+
+  override def split(): Array[Array[Byte]] = {
+
+  }
 }
