@@ -16,9 +16,11 @@
  */
 package pers.yzq.timewindow.workload.realworld.sougou
 
-import org.apache.spark.{SparkConf}
-import org.apache.spark.sql.SparkSession
 
+import scala.io.Source
+
+
+// scalastyle:off println
 object Sougou {
 
   /*
@@ -27,27 +29,14 @@ object Sougou {
   其中，用户ID是根据用户使用浏览器访问搜索引擎时的Cookie信息自动赋值，即同一次使用浏览器输入的不同查询对应同一个用户ID
    */
 
-  case class Log(ts: String, id: String, text: String, ranking: Long, number: Long, url: String) {}
-
   def main(args: Array[String]): Unit = {
-
-    val sc = SparkSession.builder().appName("Sougou - " + System.currentTimeMillis()).
-      master("local").getOrCreate()
-
-    val originRDD = sc.sparkContext.
-      textFile("F:\\BaiduNetdiskDownload\\access_log.20080601.decode.filter")
-
-    val r = "[ ]*".r
-    val spliter = ","
-
-    import sc.implicits._
-
-    val dataframe = originRDD.map(e => r.replaceAllIn(e, spliter)).
-      map(e => e.split(spliter)).map(e => Log(e(0), e(1), e(2), e(3).toLong, e(4).toLong, e(5)))
-      .toDF()
-
-    dataframe.createOrReplaceGlobalTempView("January")
-
-
+    val path = "F:\\BaiduNetdiskDownload\\sougou\\access_log.20080601.decode.filter"
+    val itr = Source.fromFile(path, "gbk").getLines()
+    val len = 200
+    var i = 0
+    while (itr.hasNext && i < len) {
+      println(itr.next())
+      i += 1
+    }
   }
 }
