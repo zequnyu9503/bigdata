@@ -26,5 +26,10 @@
             <artifactId> hbase-mapreduce</artifactId>
             <version>${hbase-version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.35</version>
+        </dependency>
     </dependencies>
 </project>

@@ -22,7 +22,7 @@ object PropertyProvider extends Serializable {
   private var property : Properties = _
 
   {
-    val sys = "pers/yzq/hbase/hbase.properties"
+    val sys = "hbase.properties"
     property = new Properties()
     property.load(getClass.getClassLoader.getResourceAsStream(sys))
   }

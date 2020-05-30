@@ -14,23 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pers.yzq.hbase
-import org.apache.hadoop.hbase.KeyValue
-import org.apache.hadoop.hbase.io.ImmutableBytesWritable
-import org.apache.spark.rdd.RDD
+package pers.yzq.timewindow.prefetcher.loader
 
-object Sougou extends BulkLoad {
+import org.apache.spark.{SparkConf, SparkContext}
+import pers.yzq.timewindow.PropertyProvider
 
+object PrefetchVelocity {
+
+  private val input = PropertyProvider.getString("prefetcher.loader.velocity.input")
 
   def main(args: Array[String]): Unit = {
+    val conf = new SparkConf().setAppName("PrefetchVelocity")
+    val sc = new SparkContext(conf)
 
-  }
-
-  override def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
-
-  }
-
-  override def split(): Array[Array[Byte]] = {
-
+    val rdd = sc.textFile(input)
   }
 }
