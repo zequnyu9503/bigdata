@@ -28,8 +28,9 @@ import org.apache.hadoop.hbase.client.{ColumnFamilyDescriptor, ColumnFamilyDescr
 import org.apache.hadoop.hbase.io.encoding.DataBlockEncoding
 import org.apache.hadoop.hbase.regionserver.BloomType
 import org.apache.hadoop.hbase.util.Bytes
+import org.apache.spark.internal.Logging
 
-object HBaseCommon {
+object HBaseCommon extends Logging{
 
   val hcp = PropertyProvider.getString("hbase.hcp")
   val path = PropertyProvider.getString("hdfs.home")
@@ -79,6 +80,7 @@ object HBaseCommon {
       val htd = new HTableDescriptor(TableName.valueOf(tableName))
       families.foreach(e => htd.addFamily(new HColumnDescriptor(Bytes.toBytes(e))))
       admin.createTable(htd)
+      logInfo(s"Create htable $tableName.")
       admin.close()
       true
     } catch {
@@ -96,6 +98,7 @@ object HBaseCommon {
       val admin = connection.getAdmin
       val tn = TableName.valueOf(tableName)
       if (admin.tableExists(tn)) {
+        logInfo(s"Disable and delete htable $tableName.")
         if (!admin.isTableDisabled(tn)) admin.disableTable(tn)
         admin.deleteTable(tn)
         admin.close()
@@ -112,6 +115,7 @@ object HBaseCommon {
       val configuration = new Configuration
       val fileSystem = FileSystem.get(new URI(path), configuration, user)
       if (fileSystem.exists(new Path(hfiles))) {
+        logInfo("HFiles exist then remove them.")
         return fileSystem.delete(new Path(hfiles), true)
       } else return true
     } catch {
