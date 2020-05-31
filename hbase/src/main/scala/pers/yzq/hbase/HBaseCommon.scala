@@ -111,7 +111,9 @@ object HBaseCommon {
     try {
       val configuration = new Configuration
       val fileSystem = FileSystem.get(new URI(path), configuration, user)
-      return fileSystem.delete(new Path(hfiles), true)
+      if (fileSystem.exists(new Path(hfiles))) {
+        return fileSystem.delete(new Path(hfiles), true)
+      } else return true
     } catch {
       case e: IOException => e.printStackTrace()
       case e: URISyntaxException => e.printStackTrace()

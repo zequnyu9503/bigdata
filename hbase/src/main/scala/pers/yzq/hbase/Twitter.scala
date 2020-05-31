@@ -72,6 +72,6 @@ object Twitter extends BulkLoad {
 
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
-    Twitter.bulkLoad()
+    Twitter.bulkLoad(true)
   }
 }

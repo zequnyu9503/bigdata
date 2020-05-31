@@ -40,8 +40,8 @@ trait BulkLoad {
       assert(HBaseCommon.createTable(tableName, Array(columnFamily), split()).equals(true))
     }
   }
-  def bulkLoad(): Unit = {
-    prepare(false)
+  def bulkLoad(checkHTable: Boolean = false): Unit = {
+    prepare(checkHTable)
     val hc = HBaseConfiguration.create
     hc.set("hbase.mapred.outputtable", tableName)
     hc.setLong("hbase.hregion.max.filesize", HConstants.DEFAULT_MAX_FILE_SIZE)
