@@ -36,7 +36,7 @@ object Twitter extends BulkLoad {
 
   val regions = 20
 
-  def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
+  override def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
     val conf = new SparkConf().setAppName("Twitter-" + System.currentTimeMillis())
     val sc = new SparkContext(conf)
     val origin = sc.textFile(hadoop_file).persist(StorageLevel.MEMORY_ONLY_2)
@@ -58,7 +58,7 @@ object Twitter extends BulkLoad {
     })
   }
 
-  def split(): Array[Array[Byte]] = {
+  override def split(): Array[Array[Byte]] = {
     val splitSet = new Array[Array[Byte]](regions)
     val set = new util.TreeSet[Array[Byte]](Bytes.BYTES_COMPARATOR)
     for (i <- Range(0, regions)) {
@@ -74,4 +74,5 @@ object Twitter extends BulkLoad {
     // scalastyle:off println
     Twitter.bulkLoad(true)
   }
+
 }
