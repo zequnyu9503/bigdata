@@ -50,7 +50,7 @@ object HBaseCommon extends Logging{
       val admin = connection.getAdmin
       val tn = TableName.valueOf(tableName)
       val tdb = TableDescriptorBuilder.newBuilder(tn)
-      val cfdbs = new util.HashSet[ColumnFamilyDescriptor](families.size)
+      val cfdbs = new util.HashSet[ColumnFamilyDescriptor](families.length)
       val familyIterator = families.iterator
       while (familyIterator.hasNext) {
         val family = familyIterator.next
@@ -61,12 +61,17 @@ object HBaseCommon extends Logging{
           .setDataBlockEncoding(DataBlockEncoding.NONE)
         cfdbs.add(cfdb.build)
       }
-      admin.createTable(tdb.setColumnFamilies(cfdbs).build, splits)
-      admin.close()
-      true
+      if (!admin.eq(null)) {
+        admin.createTable(tdb.setColumnFamilies(cfdbs).build, splits)
+        admin.close()
+        true
+      } else {
+        throw new NullPointerException("Admin is null.")
+      }
     } catch {
+      case e: NullPointerException =>
+        false
       case e: IOException =>
-        e.printStackTrace()
         false
     }
   }

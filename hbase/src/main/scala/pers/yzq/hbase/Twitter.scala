@@ -100,11 +100,11 @@ object Twitter {
 
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
-    println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
-    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
+//    println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
+//    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
     println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily),
       Twitter.split())}")
-    Twitter.bulkLoad(true)
+//    Twitter.bulkLoad(true)
   }
 
 }
