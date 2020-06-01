@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-scala -classpath \
--Xmx 16g \
-hbase/target/hbase-init.jar:\
-hbase/target/dependency/* \
+scala \
+-J-Xmx 16g \
+-classpath hbase/target/hbase-init.jar:hbase/target/dependency/* \
 pers.yzq.hbase.Twitter
