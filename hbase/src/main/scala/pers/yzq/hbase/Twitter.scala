@@ -44,9 +44,9 @@ object Twitter {
     val conf = new SparkConf().
       setAppName("Twitter-" + System.currentTimeMillis()).
       setMaster("spark://centos3:7079").
-      set("spark.executor.memory", "12g").
+      set("spark.executor.memory", "10g").
       set("spark.executor.cores", "6").
-      set("spark.driver.memory", "12g").
+      set("spark.driver.memory", "10g").
       set("spark.driver.cores", "4")
     val sc = new SparkContext(conf)
     val origin = sc.textFile(hadoop_file).persist(StorageLevel.MEMORY_ONLY_2)
