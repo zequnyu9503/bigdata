@@ -44,9 +44,13 @@ object Twitter {
     val sc = new SparkContext(conf)
     val origin = sc.textFile(hadoop_file).persist(StorageLevel.MEMORY_ONLY_2)
     val json = origin.map(line => JSON.parseObject(line))
-    json.map(json => {
+    json.filter(json => {
+      json.containsKey("timestamp_ms") &&
+      json.containsKey("text") &&
+      json.containsKey("id")
+    }).map(json => {
       val timestamp: Long = json.getLong("timestamp_ms")
-      val text = json.getOrDefault("text", "").toString
+      val text = json.getString("text")
       val id = json.getLong("id")
       val prefix = (97 + id % regions).asInstanceOf[Char]
 
