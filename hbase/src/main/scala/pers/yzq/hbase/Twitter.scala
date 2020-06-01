@@ -19,24 +19,28 @@ package pers.yzq.hbase
 import java.util
 
 import com.alibaba.fastjson.JSON
-import org.apache.hadoop.hbase.KeyValue
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.hbase.client.ConnectionFactory
+import org.apache.hadoop.hbase.{HBaseConfiguration, HConstants, KeyValue, TableName}
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
+import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2
+import org.apache.hadoop.hbase.tool.LoadIncrementalHFiles
 import org.apache.hadoop.hbase.util.Bytes
+import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 
-object Twitter extends BulkLoad {
+object Twitter {
 
-  tableName = PropertyProvider.getString("hbase.bulkload.tablename")
-  columnFamily = PropertyProvider.getString("hbase.bulkload.columnfamily")
-  columnQualify = PropertyProvider.getString("hbase.bulkload.columnqualify")
-  hfile = PropertyProvider.getString("hbase.bulkload.hfile")
-  hadoop_file = PropertyProvider.getString("hbase.bulkload.hadoopfile")
-
+  val tableName: String = PropertyProvider.getString("hbase.bulkload.tablename")
+  val columnFamily: String = PropertyProvider.getString("hbase.bulkload.columnfamily")
+  val columnQualify: String = PropertyProvider.getString("hbase.bulkload.columnqualify")
+  val hfile: String = PropertyProvider.getString("hbase.bulkload.hfile")
+  val hadoop_file: String = PropertyProvider.getString("hbase.bulkload.hadoopfile")
   val regions = 20
 
-  override def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
+  def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
     val conf = new SparkConf().setAppName("Twitter-" + System.currentTimeMillis())
     val sc = new SparkContext(conf)
     val origin = sc.textFile(hadoop_file).persist(StorageLevel.MEMORY_ONLY_2)
@@ -58,7 +62,7 @@ object Twitter extends BulkLoad {
     })
   }
 
-  override def split(): Array[Array[Byte]] = {
+  def split(): Array[Array[Byte]] = {
     val splitSet = new Array[Array[Byte]](regions)
     val set = new util.TreeSet[Array[Byte]](Bytes.BYTES_COMPARATOR)
     for (i <- Range(0, regions)) {
@@ -70,11 +74,36 @@ object Twitter extends BulkLoad {
     splitSet
   }
 
+  def bulkLoad(checkHTable: Boolean = false): Unit = {
+    val hc = HBaseConfiguration.create
+    hc.set("hbase.mapred.outputtable", tableName)
+    hc.setLong("hbase.hregion.max.filesize", HConstants.DEFAULT_MAX_FILE_SIZE)
+    hc.set("hbase.mapreduce.hfileoutputformat.table.name", tableName)
+    hc.setInt(LoadIncrementalHFiles.MAX_FILES_PER_REGION_PER_FAMILY,
+      1024 * 1024 * 1024)
+    val con = ConnectionFactory.createConnection(hc)
+    val admin = con.getAdmin
+    val table = con.getTable(TableName.valueOf(tableName))
+    val td = table.getDescriptor
+    val job = Job.getInstance(hc)
+    val rdd_ = rdd()
+    job.setMapOutputKeyClass(classOf[ImmutableBytesWritable])
+    job.setMapOutputValueClass(classOf[KeyValue])
+    HFileOutputFormat2.configureIncrementalLoadMap(job, td)
+    rdd_.saveAsNewAPIHadoopFile(hfile,
+      classOf[ImmutableBytesWritable], classOf[KeyValue],
+      classOf[HFileOutputFormat2], hc)
+    val bulkLoader = new LoadIncrementalHFiles(hc)
+    val locator = con.getRegionLocator(TableName.valueOf(tableName))
+    bulkLoader.doBulkLoad(new Path(hfile), admin, table, locator)
+  }
+
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
     println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
     println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
-    println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily), split())}")
+    println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily),
+      Twitter.split())}")
     Twitter.bulkLoad(true)
   }
 
