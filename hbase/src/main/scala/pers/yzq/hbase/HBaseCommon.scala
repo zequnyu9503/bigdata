@@ -30,7 +30,6 @@ import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.internal.Logging
 
 object HBaseCommon extends Logging{
-  val hcp: String = "pers/yzq/hbase-site.xml"
   val path: String = PropertyProvider.getString("hdfs.home")
   val user: String = PropertyProvider.getString("hdfs.user")
   val hfiles: String = PropertyProvider.getString("hbase.bulkload.hfile")
