@@ -43,6 +43,7 @@ object HBaseCommon extends Logging{
     assert(!tableName.eq(null))
     assert(!families.eq(null))
     assert(!splits.eq(null) && splits.nonEmpty)
+    // scalastyle:off println
     try {
       val hBaseConfiguration = HBaseConfiguration.create()
       hBaseConfiguration.addResource(hcp)
@@ -62,11 +63,12 @@ object HBaseCommon extends Logging{
         cfdbs.add(cfdb.build)
       }
       if (!admin.eq(null)) {
+        if (tdb.eq(null)) System.err.println("tdb is null")
         admin.createTable(tdb.setColumnFamilies(cfdbs).build, splits)
         admin.close()
         true
       } else {
-        // scalastyle:off println
+
         System.err.println("admin is null")
          false
       }
