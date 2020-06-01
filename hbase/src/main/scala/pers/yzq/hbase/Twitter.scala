@@ -50,7 +50,7 @@ object Twitter {
     }).map(json => {
       val timestamp: Long = json.getLong("timestamp_ms")
       val text = json.getString("text")
-      val id = text.hashCode()
+      val id = math.abs(text.hashCode())
       val prefix = (97 + id % regions).asInstanceOf[Char]
 
       val rowKey = prefix + id.toString
