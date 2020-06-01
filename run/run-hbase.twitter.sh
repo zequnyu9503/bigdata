@@ -18,6 +18,6 @@ ${libs_dir}/hbase-protocol-shaded-2.1.4.jar,\
 ${libs_dir}/hbase-shaded-miscellaneous-2.1.0.jar,\
 ${libs_dir}/hbase-shaded-netty-2.1.0.jar,\
 ${libs_dir}/hbase-shaded-protobuf-2.1.0.jar,\
-${libs_dir}/htrace-core-3.1.0-incubating.jar \
-${libs_dir}/fastjson-1.2.35.jar \
+${libs_dir}/htrace-core-3.1.0-incubating.jar,\
+${libs_dir}/fastjson-1.2.35.jar,\
 hbase/target/hbase-init.jar
