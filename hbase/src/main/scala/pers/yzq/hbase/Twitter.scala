@@ -41,7 +41,13 @@ object Twitter {
   val regions = 19
 
   def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
-    val conf = new SparkConf().setAppName("Twitter-" + System.currentTimeMillis())
+    val conf = new SparkConf().
+      setAppName("Twitter-" + System.currentTimeMillis()).
+      setMaster("spark://centos3:7079").
+      set("spark.executor.memory", "12g").
+      set("spark.executor.cores", "6").
+      set("spark.driver.memory", "12g").
+      set("spark.driver.cores", "4")
     val sc = new SparkContext(conf)
     val origin = sc.textFile(hadoop_file).persist(StorageLevel.MEMORY_ONLY_2)
     val json = origin.map(line => JSON.parseObject(line))
@@ -99,9 +105,9 @@ object Twitter {
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
     println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
-    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
-    println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily),
-      Twitter.split())}")
+//    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
+//    println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily),
+//      Twitter.split())}")
     Twitter.bulkLoad(true)
 //    HBaseCommon.dropDeleteTable("Kowalski")
   }
