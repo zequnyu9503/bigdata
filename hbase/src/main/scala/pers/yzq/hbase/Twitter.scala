@@ -103,7 +103,7 @@ object Twitter {
 //      Twitter.split())}")
     Twitter.bulkLoad(true)
 //    HBaseCommon.dropDeleteTable("Kowalski")
-
+    org.apache.hadoop.hbase.mapreduce.JobUtil
   }
 
 }
