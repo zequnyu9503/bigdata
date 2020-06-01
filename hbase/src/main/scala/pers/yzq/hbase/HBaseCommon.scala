@@ -66,12 +66,11 @@ object HBaseCommon extends Logging{
         admin.close()
         true
       } else {
-        throw new NullPointerException("Admin is null.")
+        // scalastyle:off println
+        System.err.println("admin is null")
+         false
       }
     } catch {
-      case e: NullPointerException =>
-        e.printStackTrace()
-        false
       case e: IOException =>
         e.printStackTrace()
         false
