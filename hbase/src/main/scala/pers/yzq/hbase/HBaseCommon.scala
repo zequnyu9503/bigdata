@@ -70,8 +70,10 @@ object HBaseCommon extends Logging{
       }
     } catch {
       case e: NullPointerException =>
+        e.printStackTrace()
         false
       case e: IOException =>
+        e.printStackTrace()
         false
     }
   }
