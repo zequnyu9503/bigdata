@@ -46,12 +46,11 @@ object Twitter {
     val json = origin.map(line => JSON.parseObject(line))
     json.filter(json => {
       json.containsKey("timestamp_ms") &&
-      json.containsKey("text") &&
-      json.containsKey("id")
+      json.containsKey("text")
     }).map(json => {
       val timestamp: Long = json.getLong("timestamp_ms")
       val text = json.getString("text")
-      val id = json.getLong("id")
+      val id = text.hashCode()
       val prefix = (97 + id % regions).asInstanceOf[Char]
 
       val rowKey = prefix + id.toString
@@ -104,9 +103,9 @@ object Twitter {
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
     println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
-//    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
-//    println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily),
-//      Twitter.split())}")
+    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
+    println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily),
+      Twitter.split())}")
     Twitter.bulkLoad(true)
 //    HBaseCommon.dropDeleteTable("Kowalski")
   }
