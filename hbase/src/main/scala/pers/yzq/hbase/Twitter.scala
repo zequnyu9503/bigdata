@@ -51,12 +51,14 @@ object Twitter {
       val prefix = (97 + id % regions).asInstanceOf[Char]
 
       val rowKey = prefix + id.toString
-      val key = new ImmutableBytesWritable(Bytes.toBytes(rowKey))
-      val value = new KeyValue(Bytes.toBytes(rowKey),
+      (rowKey, (text, timestamp))
+    }).sortByKey().map(record => {
+      val key = new ImmutableBytesWritable(Bytes.toBytes(record._1))
+      val value = new KeyValue(Bytes.toBytes(record._1),
         Bytes.toBytes(columnFamily),
         Bytes.toBytes(columnQualify),
-        timestamp,
-        Bytes.toBytes(text))
+        record._2._2,
+        Bytes.toBytes(record._2._1))
       (key, value)
     })
   }
