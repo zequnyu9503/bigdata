@@ -72,6 +72,9 @@ object Twitter extends BulkLoad {
 
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
+    println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
+    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
+    println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily), split())}")
     Twitter.bulkLoad(true)
   }
 

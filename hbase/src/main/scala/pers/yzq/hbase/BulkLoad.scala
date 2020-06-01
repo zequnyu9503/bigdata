@@ -33,15 +33,7 @@ trait BulkLoad {
   var hfile: String = _
   var hadoop_file: String = _
 
-  def prepare(checkHTable: Boolean): Unit = {
-    assert(HBaseCommon.cleanHFiles.equals(true))
-    if (checkHTable) {
-      assert(HBaseCommon.dropDeleteTable(tableName).equals(true))
-      assert(HBaseCommon.createTable(tableName, Array(columnFamily), split()).equals(true))
-    }
-  }
   def bulkLoad(checkHTable: Boolean = false): Unit = {
-    prepare(checkHTable)
     val hc = HBaseConfiguration.create
     hc.set("hbase.mapred.outputtable", tableName)
     hc.setLong("hbase.hregion.max.filesize", HConstants.DEFAULT_MAX_FILE_SIZE)
