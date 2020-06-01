@@ -38,7 +38,7 @@ object Twitter {
   val columnQualify: String = PropertyProvider.getString("hbase.bulkload.columnqualify")
   val hfile: String = PropertyProvider.getString("hbase.bulkload.hfile")
   val hadoop_file: String = PropertyProvider.getString("hbase.bulkload.hadoopfile")
-  val regions = 20
+  val regions = 19
 
   def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
     val conf = new SparkConf().setAppName("Twitter-" + System.currentTimeMillis())
@@ -63,15 +63,13 @@ object Twitter {
   }
 
   def split(): Array[Array[Byte]] = {
-    val splitSet = new Array[Array[Byte]](regions)
-    val set = new util.TreeSet[Array[Byte]](Bytes.BYTES_COMPARATOR)
+    val split = new Array[Array[Byte]](regions)
     for (i <- Range(0, regions)) {
       // From b.
-      set.add(Bytes.toBytes((98 + i).asInstanceOf[Char] + "0000000000000000000"))
+      val str = (98 + i).asInstanceOf[Char] + "0000000000000000000"
+      split(i) = Bytes.toBytes(str)
     }
-    val itr = splitSet.iterator
-    while (itr.hasNext) splitSet :+ itr.next()
-    splitSet
+    split
   }
 
   def bulkLoad(checkHTable: Boolean = false): Unit = {
@@ -100,11 +98,12 @@ object Twitter {
 
   def main(args: Array[String]): Unit = {
     // scalastyle:off println
-//    println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
-//    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
+    println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
+    println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
     println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily),
       Twitter.split())}")
-//    Twitter.bulkLoad(true)
+    Twitter.bulkLoad(true)
+//    HBaseCommon.dropDeleteTable("Kowalski")
   }
 
 }

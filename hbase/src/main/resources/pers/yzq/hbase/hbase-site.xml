@@ -35,10 +35,14 @@
   </property>
   <property>
     <name>hbase.zookeeper.quorum</name>
-    <value>centos3:2181,centos4:2181,centos5:2181,centos11:2181,centos12:2181,centos13:2181</value>
+    <value>centos3,centos4,centos5,centos11,centos12,centos13</value>
   </property>
   <property>
     <name>hbase.master.info.port</name>
     <value>60010</value>
+  </property>
+  <property>
+    <name>hbase.master</name>
+    <value>60000</value>
   </property>
 </configuration>

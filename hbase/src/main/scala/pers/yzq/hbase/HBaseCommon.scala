@@ -24,18 +24,16 @@ import java.util
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.hbase.{HBaseConfiguration, HColumnDescriptor, HTableDescriptor, TableName}
-import org.apache.hadoop.hbase.client.{ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, ConnectionFactory, TableDescriptorBuilder}
+import org.apache.hadoop.hbase.client.{ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, ConnectionFactory, HBaseAdmin, TableDescriptorBuilder}
 import org.apache.hadoop.hbase.io.encoding.DataBlockEncoding
-import org.apache.hadoop.hbase.regionserver.BloomType
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.internal.Logging
 
 object HBaseCommon extends Logging{
-
-  val hcp = PropertyProvider.getString("hbase.hcp")
-  val path = PropertyProvider.getString("hdfs.home")
-  val user = PropertyProvider.getString("hdfs.user")
-  val hfiles = PropertyProvider.getString("hbase.bulkload.hfile")
+  val hcp: String = "pers/yzq/hbase-site.xml"
+  val path: String = PropertyProvider.getString("hdfs.home")
+  val user: String = PropertyProvider.getString("hdfs.user")
+  val hfiles: String = PropertyProvider.getString("hbase.bulkload.hfile")
 
   def createTable(tableName: String,
                   families: Array[String],
@@ -46,7 +44,9 @@ object HBaseCommon extends Logging{
     // scalastyle:off println
     try {
       val hBaseConfiguration = HBaseConfiguration.create()
-      hBaseConfiguration.addResource(hcp)
+      hBaseConfiguration.set("hbase.zookeeper.quorum",
+        "centos3,centos4,centos5,centos11,centos12,centos13")
+      hBaseConfiguration.set("hbase.master", "centos3:6000")
       val connection = ConnectionFactory.createConnection(hBaseConfiguration)
       val admin = connection.getAdmin
       val tn = TableName.valueOf(tableName)
@@ -58,20 +58,12 @@ object HBaseCommon extends Logging{
         val cfdb = ColumnFamilyDescriptorBuilder
           .newBuilder(Bytes.toBytes(family))
           .setBlockCacheEnabled(true)
-          .setBloomFilterType(BloomType.NONE)
           .setDataBlockEncoding(DataBlockEncoding.NONE)
         cfdbs.add(cfdb.build)
       }
-      if (!admin.eq(null)) {
-        if (tdb.eq(null)) System.err.println("tdb is null")
         admin.createTable(tdb.setColumnFamilies(cfdbs).build, splits)
         admin.close()
         true
-      } else {
-
-        System.err.println("admin is null")
-         false
-      }
     } catch {
       case e: IOException =>
         e.printStackTrace()
@@ -79,11 +71,31 @@ object HBaseCommon extends Logging{
     }
   }
 
+  def createTable(tableName: String, families: String*): Boolean = {
+    val hBaseConfiguration = HBaseConfiguration.create()
+    hBaseConfiguration.set("hbase.zookeeper.quorum",
+      "centos3,centos4,centos5,centos11,centos12,centos13")
+    hBaseConfiguration.set("hbase.master", "centos3:6000")
+    val connection = ConnectionFactory.createConnection(hBaseConfiguration)
+    val admin = connection.getAdmin
+    val htd = new HTableDescriptor(TableName.valueOf(tableName))
+    for (family <- families) htd.addFamily(new HColumnDescriptor(family))
+    try{
+      admin.createTable(htd)
+      true
+    } catch {
+      case e: IOException =>
+        false
+    }
+  }
+
   @deprecated
   def createTable(tableName: String, families: Array[String]): Boolean = {
     try {
-      val hBaseConfiguration = HBaseConfiguration.create
-      hBaseConfiguration.addResource(hcp)
+      val hBaseConfiguration = HBaseConfiguration.create()
+      hBaseConfiguration.set("hbase.zookeeper.quorum",
+        "centos3,centos4,centos5,centos11,centos12,centos13")
+      hBaseConfiguration.set("hbase.master", "centos3:6000")
       val connection = ConnectionFactory.createConnection(hBaseConfiguration)
       val admin = connection.getAdmin
       val htd = new HTableDescriptor(TableName.valueOf(tableName))
@@ -101,8 +113,10 @@ object HBaseCommon extends Logging{
 
   def dropDeleteTable(tableName: String): Boolean = {
     try {
-      val hBaseConfiguration = HBaseConfiguration.create
-      hBaseConfiguration.addResource(hcp)
+      val hBaseConfiguration = HBaseConfiguration.create()
+      hBaseConfiguration.set("hbase.zookeeper.quorum",
+        "centos3,centos4,centos5,centos11,centos12,centos13")
+      hBaseConfiguration.set("hbase.master", "centos3:6000")
       val connection = ConnectionFactory.createConnection(hBaseConfiguration)
       val admin = connection.getAdmin
       val tn = TableName.valueOf(tableName)
