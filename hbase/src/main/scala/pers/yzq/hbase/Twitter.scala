@@ -46,7 +46,8 @@ object Twitter {
       setMaster("spark://centos3:7079").
       set("spark.executor.memory", "8g").
       set("spark.executor.cores", "6").
-      set("spark.driver.cores", "4")
+      set("spark.driver.cores", "4").
+      set("spark.driver.memory", "8g")
     val sc = new SparkContext(conf)
     val origin = sc.textFile(hadoop_file).persist(StorageLevel.MEMORY_ONLY_2)
     val json = origin.map(line => JSON.parseObject(line))
