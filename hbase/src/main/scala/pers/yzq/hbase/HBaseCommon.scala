@@ -42,6 +42,7 @@ object HBaseCommon extends Logging{
                   splits: Array[Array[Byte]]): Boolean = {
     assert(!tableName.eq(null))
     assert(!families.eq(null))
+    assert(!splits.eq(null) && splits.nonEmpty)
     try {
       val hBaseConfiguration = HBaseConfiguration.create()
       hBaseConfiguration.addResource(hcp)
