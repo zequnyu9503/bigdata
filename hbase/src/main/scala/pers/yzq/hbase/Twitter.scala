@@ -50,7 +50,7 @@ object Twitter {
         if (json.containsKey("created_at")) {
           val timestamp: Long = json.getString("timestamp_ms").toLong
           val id = json.getJSONObject("user").getLong("id")
-          val prefix = (97 + id % regions).asInstanceOf[Char]
+          val prefix = (97 + text.hashCode % regions).asInstanceOf[Char]
           val rowKey = prefix + id.toString
           (rowKey, (text, timestamp))
         } else {
