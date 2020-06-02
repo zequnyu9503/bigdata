@@ -35,6 +35,7 @@ object Twitter {
   val columnFamily: String = PropertyProvider.getString("hbase.bulkload.columnfamily")
   val columnQualify: String = PropertyProvider.getString("hbase.bulkload.columnqualify")
   val hfile: String = PropertyProvider.getString("hbase.bulkload.hfile")
+  val hadoop_dir: String = PropertyProvider.getString("hbase.bulkload.hadoopdir")
   val hadoop_file: String = PropertyProvider.getString("hbase.bulkload.hadoopfile")
   val regions = 19
 
@@ -42,20 +43,27 @@ object Twitter {
     val conf = new SparkConf().
       setAppName("Twitter-" + System.currentTimeMillis())
     val sc = new SparkContext(conf)
-    val origin = sc.textFile(hadoop_file).persist(StorageLevel.MEMORY_ONLY_2)
-    val json = origin.map(line => JSON.parseObject(line))
-    json.filter(json => {
-      json.containsKey("timestamp_ms") &&
-      json.containsKey("text")
-    }).map(json => {
-      val timestamp: Long = json.getLong("timestamp_ms")
-      val text = json.getString("text")
-      val id = math.abs(text.hashCode())
-      val prefix = (97 + id % regions).asInstanceOf[Char]
-
-      val rowKey = prefix + id.toString
-      (rowKey, (text, timestamp))
-    }).sortByKey().map(record => {
+    val files = hadoop_file.split(",").map(name => hadoop_dir + name).toSeq
+    val origin = files.map(path => sc.textFile(path)).reduce((a, b) => a.union(b)).
+      persist(StorageLevel.MEMORY_AND_DISK)
+    origin.map(line => JSON.parseObject(line)).map(json => {
+        val text = json.toJSONString
+        if (json.containsKey("created_at")) {
+          val timestamp: Long = json.getString("timestamp_ms").toLong
+          val id = json.getJSONObject("user").getLong("id")
+          val prefix = (97 + id % regions).asInstanceOf[Char]
+          val rowKey = prefix + id.toString
+          (rowKey, (text, timestamp))
+        } else {
+          val timestamp: Long = json.getJSONObject("delete").
+            getString("timestamp_ms").toLong
+          val id = json.getJSONObject("delete").
+            getJSONObject("status").getLong("user_id")
+          val prefix = (97 + id % regions).asInstanceOf[Char]
+          val rowKey = prefix + id.toString
+          (rowKey, (text, timestamp))
+        }
+      }).sortByKey().map(record => {
       val key = new ImmutableBytesWritable(Bytes.toBytes(record._1))
       val value = new KeyValue(Bytes.toBytes(record._1),
         Bytes.toBytes(columnFamily),
