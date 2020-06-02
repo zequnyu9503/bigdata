@@ -62,8 +62,7 @@ object Twitter {
           val rowKey = prefix + id.toString
           (rowKey, (text, timestamp))
         }
-      }).map(x => (x._1 + x._2._2.toString, x._2)).sortByKey().
-      map(x => (x._1.substring(0, x._1.length - x._2._2.toString.length), x._2)).
+      }).map(x => (x._1 + x._2._2.toString, x._2)).sortByKey(ascending = true).
       map(record => {
       val key = new ImmutableBytesWritable(Bytes.toBytes(record._1))
       val value = new KeyValue(Bytes.toBytes(record._1),
