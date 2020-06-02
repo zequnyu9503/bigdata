@@ -43,8 +43,7 @@ object Twitter {
     val conf = new SparkConf().
       setAppName("Twitter-" + System.currentTimeMillis())
     val sc = new SparkContext(conf)
-    val files = hadoop_file.split(",").map(name => hadoop_dir + name).toSeq
-    val origin = files.map(path => sc.textFile(path)).reduce((a, b) => a.union(b)).
+    val origin = sc.textFile(hadoop_dir + hadoop_file).
       persist(StorageLevel.MEMORY_AND_DISK)
     origin.map(line => JSON.parseObject(line)).map(json => {
         val text = json.toJSONString
@@ -63,7 +62,9 @@ object Twitter {
           val rowKey = prefix + id.toString
           (rowKey, (text, timestamp))
         }
-      }).sortByKey().map(record => {
+      }).map(x => (x._1 + x._2._2.toString, x._2)).sortByKey().
+      map(x => (x._1.substring(0, x._1.length - x._2._2.toString.length), x._2)).
+      map(record => {
       val key = new ImmutableBytesWritable(Bytes.toBytes(record._1))
       val value = new KeyValue(Bytes.toBytes(record._1),
         Bytes.toBytes(columnFamily),
