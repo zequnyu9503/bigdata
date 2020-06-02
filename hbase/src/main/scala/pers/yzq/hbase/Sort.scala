@@ -29,6 +29,6 @@ object Sort {
 //    val trans = data.map(x => (x._1 + x._2._1.toString, x._2)).sortByKey()
 //    val res = trans.map(x => (x._1.substring(0, x._1.length - x._2._1.toString.length), x._2))
 //    println(res.collect().mkString(","))
-    println("f3416951189" + "1554137582664" >= "f3416951189" + "1554116043666")
+    println("f34169511891554137582664" + "1554137582664" >= "f3416951189" + "1554116043666")
   }
 }

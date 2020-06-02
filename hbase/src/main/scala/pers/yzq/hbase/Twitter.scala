@@ -37,7 +37,7 @@ object Twitter {
   val hfile: String = PropertyProvider.getString("hbase.bulkload.hfile")
   val hadoop_dir: String = PropertyProvider.getString("hbase.bulkload.hadoopdir")
   val hadoop_file: String = PropertyProvider.getString("hbase.bulkload.hadoopfile")
-  val regions = 19
+  val regions = 20
 
   def rdd(): RDD[(ImmutableBytesWritable, KeyValue)] = {
     val conf = new SparkConf().
@@ -74,11 +74,11 @@ object Twitter {
     })
   }
 
-  def split(): Array[Array[Byte]] = {
-    val split = new Array[Array[Byte]](regions)
-    for (i <- Range(0, regions)) {
+  def split(n: Int): Array[Array[Byte]] = {
+    val split = new Array[Array[Byte]](n)
+    for (i <- Range(0, n)) {
       // From b.
-      val str = (98 + i).asInstanceOf[Char] + "0000000000000000000"
+      val str = (98 + i).asInstanceOf[Char] + "00000000000000000000000"
       split(i) = Bytes.toBytes(str)
     }
     split
@@ -113,7 +113,7 @@ object Twitter {
     println(s"Clean hfiles >> ${HBaseCommon.cleanHFiles}")
     println(s"Delete table >> ${HBaseCommon.dropDeleteTable(tableName)}")
     println(s"Crete table >> ${HBaseCommon.createTable(tableName, Array(columnFamily),
-      Twitter.split())}")
+      Twitter.split(regions - 1))}")
     Twitter.bulkLoad(true)
 //    HBaseCommon.dropDeleteTable("Kowalski")
   }
