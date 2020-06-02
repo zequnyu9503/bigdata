@@ -16,19 +16,23 @@
  */
 package pers.yzq.hbase
 
-import org.apache.spark.{SparkConf, SparkContext}
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
-object Sort {
+import com.alibaba.fastjson.JSON
+
+object TimestampSuite {
   // scalastyle:off println
-  def main(args: Array[String]): Unit = {
-//    val conf = new SparkConf().setMaster("local").setAppName("Sort")
-//    val sc = new SparkContext(conf)
-//
-//    val data = sc.parallelize(Seq(("a", (3, "...")), ("c", (1, "...")),
-//      ("b", (2, "...")), ("a", (2, "...")), ("a", (0, "...")), ("c", (0, "..."))))
-//    val trans = data.map(x => (x._1 + x._2._1.toString, x._2)).sortByKey()
-//    val res = trans.map(x => (x._1.substring(0, x._1.length - x._2._1.toString.length), x._2))
-//    println(res.collect().mkString(","))
-    println("f34169511891554137582664" + "1554137582664" >= "f3416951189" + "1554116043666")
+
+  def long2Calendar(stamp: Long): Calendar = {
+    val cal = Calendar.getInstance()
+    cal.setTimeInMillis(stamp)
+    cal
   }
+
+  def main(args: Array[String]): Unit = {
+//    val cal = TimestampSuite.long2Calendar(1554146018666L)
+//    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//    println(format.format(cal.getTime))
+   }
 }

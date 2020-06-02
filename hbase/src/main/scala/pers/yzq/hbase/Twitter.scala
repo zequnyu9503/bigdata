@@ -45,14 +45,14 @@ object Twitter {
     val sc = new SparkContext(conf)
     val origin = sc.textFile(hadoop_dir + hadoop_file).
       persist(StorageLevel.MEMORY_AND_DISK)
-    origin.map(line => JSON.parseObject(line)).map(json => {
-        val text = json.toJSONString
+    origin.map(line => {
+        val json = JSON.parseObject(line)
         if (json.containsKey("created_at")) {
           val timestamp: Long = json.getString("timestamp_ms").toLong
           val id = json.getJSONObject("user").getLong("id")
-          val prefix = (97 + text.hashCode % regions).asInstanceOf[Char]
+          val prefix = (97 + line.hashCode % regions).asInstanceOf[Char]
           val rowKey = prefix + id.toString
-          (rowKey, (text, timestamp))
+          (rowKey, (line, timestamp))
         } else {
           val timestamp: Long = json.getJSONObject("delete").
             getString("timestamp_ms").toLong
@@ -60,7 +60,7 @@ object Twitter {
             getJSONObject("status").getLong("user_id")
           val prefix = (97 + id % regions).asInstanceOf[Char]
           val rowKey = prefix + id.toString
-          (rowKey, (text, timestamp))
+          (rowKey, (line, timestamp))
         }
       }).map(x => (x._1 + x._2._2.toString, x._2)).sortByKey(ascending = true).
       map(record => {
